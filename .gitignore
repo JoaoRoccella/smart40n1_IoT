@@ -1,7 +1,10 @@
+# Python
 .venv/
 __pycache__/
 *.pyc
-.DS_Store
+
+# Configurações
 .vscode/
-.idea/
+
+# Arquivos de ambiente
 *.env
