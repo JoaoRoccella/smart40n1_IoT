@@ -27,12 +27,10 @@ DROP TABLE IF EXISTS `data`;
 CREATE TABLE `data` (
   `data_id` bigint NOT NULL AUTO_INCREMENT,
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_type_id` int NOT NULL DEFAULT '0',
+  `topic` varchar(45) DEFAULT NULL,
   `variable` varchar(45) DEFAULT NULL,
   `value` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`data_id`),
-  KEY `fk_data_type` (`data_type_id`),
-  CONSTRAINT `fk_data_type` FOREIGN KEY (`data_type_id`) REFERENCES `data_type` (`data_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -45,30 +43,7 @@ LOCK TABLES `data` WRITE;
 /*!40000 ALTER TABLE `data` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `data_type`
---
-
 DROP TABLE IF EXISTS `data_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `data_type` (
-  `data_type_id` int NOT NULL,
-  `data_type` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`data_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `data_type`
---
-
-LOCK TABLES `data_type` WRITE;
-/*!40000 ALTER TABLE `data_type` DISABLE KEYS */;
-INSERT INTO `data_type` VALUES (0,'Undefined'),(1,'Operacao'),(2,'Ambiental');
-/*!40000 ALTER TABLE `data_type` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
