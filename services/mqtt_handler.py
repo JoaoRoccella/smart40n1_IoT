@@ -30,15 +30,16 @@ def connect_mqtt() -> mqtt.Client:
 
 def insert_message_to_db(topic: str, variable: str, value: str):
     """Insere uma mensagem recebida no banco de dados."""
+    
     query = "INSERT INTO `data` (`topic`,`variable`, `value`) VALUES (%s, %s, %s);"
     params = (topic, variable, value)
 
     try:
         with Database() as db:
-            last_id = db.executar_query(query, params)
-            logger.info(f"Mensagem inserida no DB: topic={topic}, variable={variable}, value={value}, id={last_id}")
+            db.executar_query(query, params)
+            logger.info(f"Mensagem inserida na database: topic={topic}, variable={variable}, value={value}")
     except Exception as e:
-        logger.error(f"Erro ao inserir mensagem no DB: {e}")
+        logger.error(f"Erro ao inserir mensagem na database: {e}")
 
 
 def subscribe(client: mqtt.Client, topic: str):
