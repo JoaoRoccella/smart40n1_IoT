@@ -3,7 +3,7 @@ import json
 import logging
 import paho.mqtt.client as mqtt
 from dotenv import load_dotenv
-from models.database import Database
+from models.config import Database
 
 load_dotenv()
 
@@ -12,7 +12,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='[%(levelname)s] %(asctime)s - %(message)s',
 )
-logger = logging.getLogger("mqtt_logger")
+logger = logging.getLogger("uvicorn")
 
 
 def connect_mqtt() -> mqtt.Client:
