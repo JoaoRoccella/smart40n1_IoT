@@ -1,3 +1,4 @@
+import os
 from pydantic import BaseModel, field_validator
 from typing import Optional, Dict, Tuple
 from enum import Enum
@@ -11,7 +12,6 @@ class TimeUnit(str, Enum):
 
     @classmethod
     def from_str(cls, unit: str):
-        """Mapeia unidade no plural ou minúscula para o enum correspondente."""
         mapping = {
             "minutes": cls.minute,
             "minute": cls.minute,
@@ -28,7 +28,6 @@ class LastVariablePayload(BaseModel):
     time: Optional[str] = None
     unit: Optional[str] = None
 
-    # --- Validação de parâmetros ---
     @field_validator("time")
     def validar_tempo(cls, v):
         if v is not None and not v.isdigit():
@@ -43,26 +42,34 @@ class LastVariablePayload(BaseModel):
             raise ValueError("Unidade inválida. Use: minute(s), hour(s) ou day(s).")
         return v
 
-    # --- Montagem e execução da query ---
     def fetch(self) -> Dict:
-        """
-        Cria a query SQL e executa automaticamente no banco.
-        Retorna uma lista de registros ou mensagem de erro.
-        """
         try:
-            # base query
-            query = "SELECT `timestamp`, `variable`, `value` FROM `data` WHERE `variable` = %s"
-            params: Tuple = (self.variable,)
+            db_type = os.getenv("DB_TYPE", "mysql").lower()
 
-            # verifica se deve aplicar intervalo
+            # --- base da query (placeholders mudam) ---
+            if db_type == "sqlite":
+                query = "SELECT timestamp, variable, value FROM data WHERE variable = ?"
+                params: Tuple = (self.variable,)
+            else:
+                query = "SELECT `timestamp`, `variable`, `value` FROM `data` WHERE `variable` = %s"
+                params: Tuple = (self.variable,)
+
+            # --- intervalo de tempo ---
             if self.time and self.unit:
                 unidade_sql = TimeUnit.from_str(self.unit).value
-                query += f" AND `timestamp` >= NOW() - INTERVAL {int(self.time)} {unidade_sql}"
-                query += " ORDER BY `timestamp` DESC"
-            else:
-                query += " ORDER BY `timestamp` DESC LIMIT 1"
 
-            # executa no banco
+                if db_type == "sqlite":
+                    # SQLite aceita unidades em minúsculo com plural opcional
+                    unit_sqlite = unidade_sql.lower() + "s"
+                    query += f" AND timestamp >= DATETIME('now', '-{int(self.time)} {unit_sqlite}')"
+                    query += " ORDER BY timestamp DESC"
+                else:
+                    query += f" AND `timestamp` >= NOW() - INTERVAL {int(self.time)} {unidade_sql}"
+                    query += " ORDER BY `timestamp` DESC"
+            else:
+                query += " ORDER BY timestamp DESC LIMIT 1"
+
+            # --- executa ---
             with Database() as db:
                 result = db.executar_query(query, params)
                 if result:
