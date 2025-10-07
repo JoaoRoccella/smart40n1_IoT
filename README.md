@@ -32,6 +32,22 @@ pip install -r requirements.txt
 mysql -u seu_usuario -p seu_banco_de_dados < data/smart40n1.sql
 ```
 
+## Criação da imagem Docker
+
+Para facilitar a implantação, você pode criar uma imagem Docker com o Dockerfile e o docker-compose.yml fornecidos.
+
+Para construir a imagem e iniciar o contêiner, execute:
+
+```bash
+docker compose up --build
+```
+
+OBSERVAÇÃO: Você deve ter o Docker Desktop instalado e em execução no seu sistema para usar este comando. Obtenha o Docker Desktop em: https://www.docker.com/products/docker-desktop/ ou instale a partir do winget:
+
+```bash
+winget install Docker.DockerDesktop
+```
+
 ## Uso
 
 A bancada Smart 4.0 N1 enviará dados para um broker MQTT, que serão capturados pelo serviço mqtt_handler.py e armazenados no banco de dados MySQL utilizando a classe `Database` da camada de modelos.
