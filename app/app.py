@@ -1,10 +1,10 @@
 import os
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from services.mqtt_handler import connect_mqtt, subscribe
-from models.payload import LastVariablePayload
+from routes import general, smart40n1
 
-
+# Define o lifespan para gerenciar a conexão MQTT
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     client = connect_mqtt()
@@ -23,16 +23,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.title = "API para Bancada Smart4.0 N1"
+app.version = "1.0.0"
+app.description = """
+API desenvolvida para gerenciar e armazenar dados da Bancada Smart4.0 N1. 
+Utiliza MQTT para comunicação segura e FastAPI para endpoints RESTful.
+"""
+app.terms_of_service = "http://example.com/terms/"
+app.contact = {
+    "name": "Suporte Smart4.0 N1",
+    "url": "http://example.com/contact/",
+    "email": "joao.a@docente.senai.br",
+}
 
-@app.get("/helloThere")
-def ping():
-    return {"line": "General Kenobi!"}
-
-
-@app.get("/{variable}/last")
-@app.get("/{variable}/last/{time}/{unit}")
-def get_last_variable(payload: LastVariablePayload = Depends()):
-    """
-    Endpoint delega toda a validação e execução da query ao payload.py.
-    """
-    return payload.fetch()
+app.include_router(general.router)
+app.include_router(smart40n1.router)
