@@ -1,8 +1,7 @@
-version: "3.9"
-
 services:
   app:
     build: .
+    image: smart40n1_app_image
     container_name: smart40n1_app
     ports:
       - "8000:8000"
