@@ -23,7 +23,7 @@ router = APIRouter()
         500: {"description": "Erro interno do servidor"},
     },
 )
-def root():
+async def root():
     return {"message": "OK, a API está rodando. Consulte /docs para a documentação."}
 
 
@@ -43,5 +43,5 @@ def root():
         500: {"description": "Erro interno do servidor"},
     },
 )
-def helloThere():
+async def helloThere():
     return {"message": "General Kenobi!"}

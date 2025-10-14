@@ -18,7 +18,7 @@ router = APIRouter()
                     "example": {
                         "data": [
                             {
-                                "variable": "temperature",
+                                "variable": "temperatura",
                                 "value": "23",
                                 "timestamp": "2024-10-01T12:34:56Z",
                             }
@@ -81,7 +81,7 @@ router = APIRouter()
         500: {"description": "Erro interno do servidor"},
     },
 )
-def get_last_variable(payload: LastVariablePayload = Depends()):
+async def get_last_variable(payload: LastVariablePayload = Depends()):
     """
     Endpoint delega toda a validação e execução da query ao smart40n1.py.
     """
