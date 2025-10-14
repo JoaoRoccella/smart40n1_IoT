@@ -36,7 +36,8 @@ class DatabaseMySQL:
                 host=self.host,
                 user=self.username,
                 password=self.password,
-                database=self.database
+                database=self.database,
+                port=int(os.getenv("DB_PORT", 3306))
             )
             
             if self.connection.is_connected():
