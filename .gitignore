@@ -8,3 +8,6 @@ __pycache__/
 
 # Arquivos de ambiente
 *.env
+
+# Database
+*.db
